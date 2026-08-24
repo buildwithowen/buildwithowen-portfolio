@@ -47,7 +47,9 @@ export default function Home() {
 
         <nav className="system-nav">
           <button
-            className={screen === "home" ? "active" : ""}
+            className={
+              screen === "home" ? "active" : ""
+            }
             onClick={() => setScreen("home")}
           >
             /home
@@ -93,6 +95,7 @@ export default function Home() {
 
             <div className="file-tree">
               <p>▾ build-with-owen</p>
+
               <p className="indent-1">
                 ▾ app
               </p>
@@ -484,10 +487,10 @@ export default function Home() {
 
                 <Deployment
                   number="002"
-                  location="AUSTRALIA"
-                  name="Ross Furniture Transport"
-                  stack="WEB DEVELOPMENT / SEO / LEAD GENERATION"
-                  url="https://www.rossfurnituretransport.com.au/"
+                  location="TRAVEL / TOURS"
+                  name="RZE Travel & Tours"
+                  stack="WEB DEVELOPMENT / UX / CONVERSION"
+                  url="https://www.rzetravelandtours.com/"
                 />
 
                 <Deployment
@@ -632,7 +635,6 @@ function SystemRow({
   return (
     <div className="system-row">
       <span>{label}</span>
-
       <strong>{value}</strong>
     </div>
   );
@@ -717,10 +719,12 @@ function ProjectForm() {
         "/api/contact",
         {
           method: "POST",
+
           headers: {
             "Content-Type":
               "application/json",
           },
+
           body: JSON.stringify(form),
         }
       );
@@ -1355,10 +1359,6 @@ function Capability({
   );
 }
 
-/* =========================================
-   ABOUT WINDOW
-========================================= */
-
 function AboutWindow({
   close,
 }: {
@@ -1531,7 +1531,8 @@ function AboutWindow({
               </small>
 
               <strong>
-                STARTUPS / LOCAL BUSINESSES / AGENCIES / UPWORK CLIENTS
+                STARTUPS / LOCAL BUSINESSES /
+                AGENCIES / UPWORK CLIENTS
               </strong>
             </div>
           </div>
@@ -1597,16 +1598,20 @@ function PopupWindow({
   const content = {
     seo: {
       label: "/seo",
+
       title:
         "Search starts in the codebase.",
+
       text:
         "Architecture, performance, metadata, schema and tracking are part of the build — not something bolted on afterwards.",
     },
 
     ads: {
       label: "/ads",
+
       title:
         "Traffic needs somewhere good to land.",
+
       text:
         "Google Ads and Meta Ads connected to conversion-focused websites, analytics and proper tracking.",
     },
