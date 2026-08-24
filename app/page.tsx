@@ -22,10 +22,33 @@ export default function Home() {
   const [windowOpen, setWindowOpen] =
     useState<WindowType>(null);
 
+  const [mobileMenuOpen, setMobileMenuOpen] =
+    useState(false);
+
   const formRef = useRef<HTMLDivElement>(null);
+
+  function closeMobileMenu() {
+    setMobileMenuOpen(false);
+  }
+
+  function goHome() {
+    setScreen("home");
+    closeMobileMenu();
+  }
+
+  function goDeployments() {
+    setScreen("deployments");
+    closeMobileMenu();
+  }
+
+  function openWindow(type: WindowType) {
+    setWindowOpen(type);
+    closeMobileMenu();
+  }
 
   function goToContact() {
     setScreen("deployments");
+    closeMobileMenu();
 
     setTimeout(() => {
       formRef.current?.scrollIntoView({
@@ -37,20 +60,22 @@ export default function Home() {
 
   return (
     <main className="developer-os">
+      {/* =========================================
+          TOP BAR
+      ========================================= */}
+
       <header className="system-bar">
         <button
           className="brand"
-          onClick={() => setScreen("home")}
+          onClick={goHome}
         >
           BUILD<span>/</span>WITH<span>/</span>OWEN
         </button>
 
         <nav className="system-nav">
           <button
-            className={
-              screen === "home" ? "active" : ""
-            }
-            onClick={() => setScreen("home")}
+            className={screen === "home" ? "active" : ""}
+            onClick={goHome}
           >
             /home
           </button>
@@ -59,19 +84,23 @@ export default function Home() {
             className={
               screen === "deployments" ? "active" : ""
             }
-            onClick={() => setScreen("deployments")}
+            onClick={goDeployments}
           >
             /deployments
           </button>
 
           <button
-            onClick={() => setWindowOpen("stack")}
+            onClick={() =>
+              openWindow("stack")
+            }
           >
             /stack
           </button>
 
           <button
-            onClick={() => setWindowOpen("about")}
+            onClick={() =>
+              openWindow("about")
+            }
           >
             /about
           </button>
@@ -84,7 +113,107 @@ export default function Home() {
           <span className="status-dot" />
           contact_me()
         </button>
+
+        {/* MOBILE MENU BUTTON */}
+
+        <button
+          className={`mobile-menu-button ${
+            mobileMenuOpen ? "open" : ""
+          }`}
+          onClick={() =>
+            setMobileMenuOpen(
+              (current) => !current
+            )
+          }
+          aria-label="Open navigation menu"
+          aria-expanded={mobileMenuOpen}
+        >
+          <span />
+          <span />
+          <span />
+        </button>
       </header>
+
+      {/* =========================================
+          MOBILE MENU
+      ========================================= */}
+
+      {mobileMenuOpen && (
+        <div className="mobile-menu">
+          <div className="mobile-menu-command">
+            <span>
+              owen@portfolio:~$
+            </span>{" "}
+            navigation --mobile
+          </div>
+
+          <nav className="mobile-menu-links">
+            <button
+              className={
+                screen === "home"
+                  ? "active"
+                  : ""
+              }
+              onClick={goHome}
+            >
+              <span>01</span>
+              /home
+            </button>
+
+            <button
+              className={
+                screen === "deployments"
+                  ? "active"
+                  : ""
+              }
+              onClick={goDeployments}
+            >
+              <span>02</span>
+              /deployments
+            </button>
+
+            <button
+              onClick={() =>
+                openWindow("stack")
+              }
+            >
+              <span>03</span>
+              /stack
+            </button>
+
+            <button
+              onClick={() =>
+                openWindow("about")
+              }
+            >
+              <span>04</span>
+              /about
+            </button>
+
+            <button
+              className="mobile-contact-link"
+              onClick={goToContact}
+            >
+              <span>05</span>
+              contact_me()
+            </button>
+          </nav>
+
+          <div className="mobile-menu-status">
+            <span>
+              ● SYSTEM ONLINE
+            </span>
+
+            <strong>
+              AVAILABLE_FOR_PROJECTS
+            </strong>
+          </div>
+        </div>
+      )}
+
+      {/* =========================================
+          HOME
+      ========================================= */}
 
       {screen === "home" && (
         <section className="workspace">
@@ -95,7 +224,6 @@ export default function Home() {
 
             <div className="file-tree">
               <p>▾ build-with-owen</p>
-
               <p className="indent-1">
                 ▾ app
               </p>
@@ -116,9 +244,7 @@ export default function Home() {
 
               <button
                 className="tree-button indent-1"
-                onClick={() =>
-                  setScreen("deployments")
-                }
+                onClick={goDeployments}
               >
                 ▸ deployments
               </button>
@@ -126,7 +252,7 @@ export default function Home() {
               <button
                 className="tree-button indent-1"
                 onClick={() =>
-                  setWindowOpen("stack")
+                  openWindow("stack")
                 }
               >
                 ▸ stack
@@ -135,7 +261,7 @@ export default function Home() {
               <button
                 className="tree-button indent-1"
                 onClick={() =>
-                  setWindowOpen("about")
+                  openWindow("about")
                 }
               >
                 ▸ about
@@ -338,9 +464,7 @@ export default function Home() {
               <div className="hero-buttons">
                 <button
                   className="primary-button"
-                  onClick={() =>
-                    setScreen("deployments")
-                  }
+                  onClick={goDeployments}
                 >
                   VIEW DEPLOYMENTS ↗
                 </button>
@@ -406,7 +530,7 @@ export default function Home() {
               <button
                 className="quick-link"
                 onClick={() =>
-                  setWindowOpen("stack")
+                  openWindow("stack")
                 }
               >
                 /stack
@@ -415,7 +539,7 @@ export default function Home() {
               <button
                 className="quick-link"
                 onClick={() =>
-                  setWindowOpen("about")
+                  openWindow("about")
                 }
               >
                 /about
@@ -424,7 +548,7 @@ export default function Home() {
               <button
                 className="quick-link"
                 onClick={() =>
-                  setWindowOpen("seo")
+                  openWindow("seo")
                 }
               >
                 /seo
@@ -433,7 +557,7 @@ export default function Home() {
               <button
                 className="quick-link"
                 onClick={() =>
-                  setWindowOpen("ads")
+                  openWindow("ads")
                 }
               >
                 /ads
@@ -442,6 +566,10 @@ export default function Home() {
           </aside>
         </section>
       )}
+
+      {/* =========================================
+          DEPLOYMENTS
+      ========================================= */}
 
       {screen === "deployments" && (
         <section className="deployments-screen">
@@ -528,16 +656,16 @@ export default function Home() {
               </b>
             </span>
 
-            <button
-              onClick={() =>
-                setScreen("home")
-              }
-            >
+            <button onClick={goHome}>
               ← RETURN_HOME()
             </button>
           </div>
         </section>
       )}
+
+      {/* =========================================
+          TERMINAL
+      ========================================= */}
 
       <footer className="terminal">
         <span className="terminal-label">
@@ -558,6 +686,40 @@ export default function Home() {
           START_PROJECT() ↗
         </button>
       </footer>
+
+      {/* =========================================
+          WHATSAPP
+      ========================================= */}
+
+      <a
+        className="whatsapp-float"
+        href="https://wa.me/639434665920?text=Hi%20Owen!%20I%20found%20you%20through%20Build%20With%20Owen%20and%20I%27d%20like%20to%20discuss%20a%20project."
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Chat with Owen on WhatsApp"
+        title="Chat on WhatsApp"
+      >
+        <svg
+          viewBox="0 0 32 32"
+          aria-hidden="true"
+        >
+          <path
+            fill="currentColor"
+            d="M19.11 17.45c-.29-.15-1.71-.84-1.97-.94-.26-.1-.45-.15-.64.15-.19.29-.74.94-.91 1.13-.17.19-.34.22-.63.07-.29-.15-1.23-.45-2.34-1.44-.86-.77-1.45-1.72-1.62-2.01-.17-.29-.02-.45.13-.6.13-.13.29-.34.44-.51.15-.17.19-.29.29-.49.1-.19.05-.36-.02-.51-.07-.15-.64-1.55-.88-2.12-.23-.56-.47-.48-.64-.49h-.55c-.19 0-.51.07-.77.36-.26.29-1.01.99-1.01 2.41s1.04 2.8 1.18 2.99c.15.19 2.04 3.12 4.95 4.37.69.3 1.23.48 1.65.61.69.22 1.32.19 1.82.12.56-.08 1.71-.7 1.95-1.38.24-.68.24-1.26.17-1.38-.07-.12-.26-.19-.55-.34Z"
+          />
+
+          <path
+            fill="currentColor"
+            d="M16.02 3.2c-7.09 0-12.85 5.76-12.85 12.84 0 2.26.59 4.47 1.7 6.41L3.06 29l6.7-1.76a12.84 12.84 0 0 0 6.25 1.59h.01c7.08 0 12.84-5.76 12.84-12.85C28.86 8.95 23.1 3.2 16.02 3.2Zm0 23.46h-.01a10.65 10.65 0 0 1-5.43-1.49l-.39-.23-3.98 1.04 1.06-3.88-.25-.4a10.66 10.66 0 1 1 9 4.96Z"
+          />
+        </svg>
+
+        <span className="whatsapp-pulse" />
+      </a>
+
+      {/* =========================================
+          WINDOWS
+      ========================================= */}
 
       {windowOpen === "stack" && (
         <StackWindow
@@ -588,6 +750,10 @@ export default function Home() {
     </main>
   );
 }
+
+/* =========================================
+   HELPERS
+========================================= */
 
 function CodeLine({
   number,
@@ -640,6 +806,10 @@ function SystemRow({
   );
 }
 
+/* =========================================
+   DEPLOYMENT
+========================================= */
+
 function Deployment({
   number,
   location,
@@ -691,6 +861,10 @@ function Deployment({
     </a>
   );
 }
+
+/* =========================================
+   CONTACT FORM
+========================================= */
 
 function ProjectForm() {
   const [form, setForm] = useState({
@@ -1117,6 +1291,10 @@ function ProjectForm() {
   );
 }
 
+/* =========================================
+   STACK
+========================================= */
+
 function StackWindow({
   close,
 }: {
@@ -1359,6 +1537,10 @@ function Capability({
   );
 }
 
+/* =========================================
+   ABOUT
+========================================= */
+
 function AboutWindow({
   close,
 }: {
@@ -1588,6 +1770,10 @@ function WorkflowStep({
   );
 }
 
+/* =========================================
+   SEO / ADS POPUPS
+========================================= */
+
 function PopupWindow({
   type,
   close,
@@ -1598,20 +1784,16 @@ function PopupWindow({
   const content = {
     seo: {
       label: "/seo",
-
       title:
         "Search starts in the codebase.",
-
       text:
         "Architecture, performance, metadata, schema and tracking are part of the build — not something bolted on afterwards.",
     },
 
     ads: {
       label: "/ads",
-
       title:
         "Traffic needs somewhere good to land.",
-
       text:
         "Google Ads and Meta Ads connected to conversion-focused websites, analytics and proper tracking.",
     },
