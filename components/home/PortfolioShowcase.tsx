@@ -1,18 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { useCallback, useEffect, useRef, useState, useSyncExternalStore, type CSSProperties } from "react";
+import { useId, useLayoutEffect, useRef, useState, type CSSProperties } from "react";
 import { projects } from "./data";
 import s from "./PortfolioShowcase.module.css";
-
-function subscribeMotion(callback: () => void) {
-  const media = matchMedia("(prefers-reduced-motion: reduce)");
-  media.addEventListener("change", callback);
-  return () => media.removeEventListener("change", callback);
-}
-function motionSnapshot() {
-  return matchMedia("(prefers-reduced-motion: reduce)").matches;
-}
 
 // Editorial copy is local to this spotlight; shared project content stays intact.
 const editorialCopy: Record<string, { industry: string; description: string }> = {
@@ -34,176 +25,110 @@ const editorialCopy: Record<string, { industry: string; description: string }> =
   },
 };
 
-export default function PortfolioShowcase({ items = projects, interval = 7000 }: {
-  items?: typeof projects;
-  interval?: number;
-}) {
-  const root = useRef<HTMLElement>(null);
-  const gesture = useRef<{ x: number; y: number } | null>(null);
-  const wheelGesture = useRef({ lastEvent: 0, lastChange: 0, delta: 0, consumed: false });
-  const wheelReset = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const [scene, setScene] = useState({ index: 0, previous: null as number | null, direction: 1 });
-  const [inView, setInView] = useState(false);
-  const [pageVisible, setPageVisible] = useState(true);
-  const [paused, setPaused] = useState(false);
-  const [hovered, setHovered] = useState(false);
+export default function PortfolioShowcase({ items = projects }: { items?: typeof projects }) {
+  const [active, setActive] = useState(0);
   const [focused, setFocused] = useState(false);
-  const [interacting, setInteracting] = useState(false);
-  const reduced = useSyncExternalStore(subscribeMotion, motionSnapshot, () => true);
-  const running = items.length > 1 && inView && pageVisible && !paused && !hovered && !focused && !interacting && !reduced;
+  const selectors = useRef<(HTMLButtonElement | null)[]>([]);
+  const pendingFocus = useRef<number | null>(null);
+  const hoverPoint = useRef<{ x: number; y: number } | null>(null);
+  const id = useId();
 
-  const advance = useCallback((direction: number) => {
-    if (items.length < 2) return;
-    setScene(current => ({
-      index: (current.index + direction + items.length) % items.length,
-      previous: reduced ? null : current.index,
-      direction,
-    }));
-  }, [items.length, reduced]);
-
-  useEffect(() => {
-    const element = root.current;
-    if (!element) return;
-    const observer = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), { threshold: 0.2 });
-    observer.observe(element);
-    const visibility = () => setPageVisible(!document.hidden);
-    visibility();
-    document.addEventListener("visibilitychange", visibility);
-    return () => {
-      observer.disconnect();
-      document.removeEventListener("visibilitychange", visibility);
-      if (wheelReset.current) clearTimeout(wheelReset.current);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (scene.previous === null) return;
-    const timer = setTimeout(() => setScene(current => ({ ...current, previous: null })), reduced ? 0 : 800);
-    return () => clearTimeout(timer);
-  }, [scene.index, scene.previous, reduced]);
-
-  useEffect(() => {
-    if (!running || scene.previous !== null) return;
-    const timer = setTimeout(() => advance(1), interval);
-    return () => clearTimeout(timer);
-  }, [running, scene.index, scene.previous, interval, advance]);
+  const activeIndex = items.length ? active % items.length : 0;
+  useLayoutEffect(() => {
+    if (pendingFocus.current !== null) {
+      selectors.current[pendingFocus.current]?.focus({ preventScroll: true });
+      pendingFocus.current = null;
+    }
+  }, [activeIndex]);
 
   if (!items.length) return null;
-  const activeIndex = scene.index % items.length;
   const current = items[activeIndex];
   const copy = editorialCopy[current.name] ?? { industry: current.category, description: current.description };
-  const deck = Array.from({ length: Math.min(3, items.length) }, (_, rank) => ({ index: (activeIndex + rank) % items.length, rank }));
-  if (!reduced && scene.previous !== null && !deck.some(card => card.index === scene.previous)) {
-    deck.push({ index: scene.previous, rank: -1 });
-  }
 
-  function endGesture(x: number, y: number) {
-    const start = gesture.current;
-    gesture.current = null;
-    setInteracting(false);
-    if (!start) return;
-    const dx = x - start.x;
-    const dy = y - start.y;
-    if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.2) advance(dx < 0 ? 1 : -1);
-    else if (Math.abs(dy) > 45 && Math.abs(dy) > Math.abs(dx) * 1.2) advance(dy < 0 ? 1 : -1);
-  }
 
   return (
-    <section ref={root} className={`section ${s.showcase}`} aria-label="Featured portfolio spotlight"
-      onMouseEnter={() => { if (matchMedia("(hover: hover) and (pointer: fine)").matches) setHovered(true); }}
-      onMouseLeave={() => setHovered(false)}
-      onFocusCapture={() => setFocused(true)}
-      onBlurCapture={event => { if (!event.currentTarget.contains(event.relatedTarget)) setFocused(false); }}
-      onWheel={event => {
-        if (event.ctrlKey || !inView || items.length < 2 ||
-          !matchMedia("(min-width: 601px) and (hover: hover) and (pointer: fine)").matches) return;
-        const horizontal = Math.abs(event.deltaX) > Math.abs(event.deltaY);
-        const unit = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? window.innerHeight : 1;
-        const delta = (horizontal ? event.deltaX : event.deltaY) * unit;
-        if (Math.abs(delta) < 1) return;
-        const now = performance.now();
-        const wheel = wheelGesture.current;
-        // Treat trackpad momentum as one gesture, with an additional transition cooldown.
-        if (now - wheel.lastEvent > 300) {
-          wheel.delta = 0;
-          wheel.consumed = false;
-        }
-        wheel.lastEvent = now;
-        setInteracting(true);
-        if (wheelReset.current) clearTimeout(wheelReset.current);
-        wheelReset.current = setTimeout(() => setInteracting(false), 1100);
-        if (wheel.consumed || (wheel.lastChange > 0 && now - wheel.lastChange < 900)) return;
-        wheel.delta += delta;
-        if (Math.abs(wheel.delta) < 60) return;
-        wheel.consumed = true;
-        const direction = wheel.delta > 0 ? 1 : -1;
-        const index = scene.index % items.length;
-        // Wheel navigation never wraps or cancels native page scrolling.
-        if ((direction < 0 && index === 0) || (direction > 0 && index === items.length - 1)) return;
-        wheel.lastChange = now;
-        advance(direction);
-      }}
-      onKeyDown={event => {
-        if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(event.key)) {
-          event.preventDefault();
-          advance(event.key === "ArrowRight" || event.key === "ArrowDown" ? 1 : -1);
-        }
-      }}>
+    <section className={`section ${s.showcase}`} aria-label="Featured portfolio spotlight">
       <div className={`container ${s.grid}`}>
         <div className={s.textColumn}>
           <p className="eyebrow">INDUSTRY SPOTLIGHT</p>
           <div className={s.copyStack}>
-            <div key={activeIndex} className={`${s.copy} ${scene.previous !== null ? s.copyEnter : ""}`}>
+            <div key={activeIndex} className={s.copy}>
               <h2><span className={s.accent}>{copy.industry}</span>.</h2>
               <p className={s.description}>{copy.description}</p>
               <p className={s.company}>{current.name}</p>
             </div>
           </div>
           <div className={s.controls}>
-            <span className={s.counter} role="status" aria-live={focused ? "polite" : "off"} aria-label={`Project ${activeIndex + 1} of ${items.length}: ${current.name}`}>
+            <span className={s.counter} role="status" aria-live={focused ? "polite" : "off"}
+              aria-label={`Project ${activeIndex + 1} of ${items.length}: ${current.name}`}>
               {String(activeIndex + 1).padStart(2, "0")}<span> / {String(items.length).padStart(2, "0")}</span>
             </span>
             <div className={s.progress} aria-hidden="true">
-              <span key={`${activeIndex}-${running && scene.previous === null}`}
-                className={running && scene.previous === null ? s.progressActive : undefined}
-                style={{ animationDuration: `${interval}ms` }} />
+              <span style={{ transform: `scaleX(${(activeIndex + 1) / items.length})` }} />
             </div>
-            {!reduced && <button type="button" className={s.pause} aria-pressed={paused} onClick={() => setPaused(value => !value)}>
-              <span aria-hidden="true">{paused ? "▶" : "Ⅱ"}</span>
-              <span className={s.srOnly}>{paused ? "Play" : "Pause"} portfolio spotlight</span>
-            </button>}
           </div>
         </div>
-        <div className={s.visual}>
-          <p id="portfolio-navigation-help" className={s.srOnly}>
-            Use the arrow keys to change projects. Swipe left or right on touch screens.
+        <div className={s.composition} role="group" tabIndex={0}
+          aria-label="Project lineup. Hover, focus or tap a project to bring it to the front."
+          aria-describedby={`${id}-help`}
+          onPointerLeave={() => { hoverPoint.current = null; }}
+          onFocusCapture={() => setFocused(true)}
+          onBlurCapture={event => {
+            if (!event.currentTarget.contains(event.relatedTarget)) setFocused(false);
+          }}
+          onKeyDown={event => {
+            const directions: Record<string, number> = { ArrowRight: 1, ArrowDown: 1, ArrowLeft: -1, ArrowUp: -1 };
+            let next: number;
+            if (event.key === "Home") next = 0;
+            else if (event.key === "End") next = items.length - 1;
+            else if (event.key in directions) next = (activeIndex + directions[event.key] + items.length) % items.length;
+            else return;
+            event.preventDefault();
+            if (next === activeIndex) selectors.current[next]?.focus({ preventScroll: true });
+            else { pendingFocus.current = next; setActive(next); }
+          }}
+          >
+          <p id={`${id}-help`} className={s.srOnly}>
+            Use Tab or the arrow keys to explore all projects. Home and End select the first and last project.
+            Hover an exposed card or tap a project to bring it to the front. Scroll vertically to continue through the page.
           </p>
-          <div className={s.preview} role="group" tabIndex={0}
-            aria-label="Featured website preview. Swipe, drag, or use arrow keys to change project."
-            aria-describedby="portfolio-navigation-help"
-            aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown"
-            onPointerDown={event => {
-              if (wheelReset.current) clearTimeout(wheelReset.current);
-              gesture.current = { x: event.clientX, y: event.clientY };
-              setInteracting(true);
-              event.currentTarget.setPointerCapture(event.pointerId);
-            }}
-            onPointerUp={event => endGesture(event.clientX, event.clientY)}
-            onPointerCancel={() => { gesture.current = null; setInteracting(false); }}
-            onLostPointerCapture={() => { gesture.current = null; setInteracting(false); }}
-            >
-            {deck.map(({ index, rank }) => (
-              <div key={items[index].name}
-                className={`${s.deckCard} ${rank === -1 ? s.departing : ""} ${rank === 0 && scene.previous !== null && scene.direction < 0 ? s.arriving : ""}`}
-                style={{ "--rank": Math.max(0, rank), zIndex: rank === -1 ? 5 : 4 - rank } as CSSProperties}
-                data-rank={rank} aria-hidden={rank !== 0 ? true : undefined}>
-                <Image src={items[index].image} alt={rank === 0 ? `${items[index].name} website preview` : ""}
-                  fill sizes="(max-width: 600px) calc(100vw - 64px), (max-width: 900px) calc(100vw - 160px), (max-width: 1100px) 50vw, 700px"
-                  preload={rank === 0} draggable={false} />
-              </div>
-            ))}
+          <div className={s.lineup} style={{ "--count": items.length } as CSSProperties}>
+            {items.map((project, index) => {
+              const position = (index - activeIndex + items.length) % items.length;
+              return (
+                <button key={project.name} ref={element => { selectors.current[index] = element; }}
+                  type="button" id={`${id}-project-${index}`}
+                  className={`${s.cardSlot} ${position === 0 ? s.active : ""}`}
+                  style={{ "--position": position, "--scale": 1 - position * .006,
+                    zIndex: items.length - position } as CSSProperties}
+                  data-project-index={index} data-position={position} data-active={position === 0}
+                  aria-label={`Preview ${project.name}, project ${index + 1} of ${items.length}`}
+                  aria-pressed={position === 0}
+                  onPointerMove={event => {
+                    // Moving cards must not select another project beneath a stationary pointer.
+                    if (event.pointerType !== "mouse" || (!event.movementX && !event.movementY) ||
+                      !matchMedia("(hover: hover) and (pointer: fine)").matches || index === activeIndex) return;
+                    const previous = hoverPoint.current;
+                    if (previous && Math.hypot(event.clientX - previous.x, event.clientY - previous.y) < 6) return;
+                    hoverPoint.current = { x: event.clientX, y: event.clientY };
+                    setActive(index);
+                  }}
+                  onFocus={() => setActive(index)} onClick={() => setActive(index)}>
+                  <span className={s.window}>
+                    <span className={s.windowBar} aria-hidden="true">
+                      <span className={s.dots}><i /><i /><i /></span>
+                      <span className={s.windowName}>{project.name}</span>
+                    </span>
+                    <span className={s.screenshot}>
+                      <Image src={project.image} alt={position === 0 ? `${project.name} website preview` : ""}
+                        fill sizes="(max-width: 600px) calc(100vw - 80px), (max-width: 788px) calc(100vw - 184px), (max-width: 900px) 604px, (max-width: 1100px) 320px, 500px"
+                        preload={position === 0} draggable={false} />
+                    </span>
+                  </span>
+                </button>
+              );
+            })}
           </div>
-
         </div>
       </div>
     </section>

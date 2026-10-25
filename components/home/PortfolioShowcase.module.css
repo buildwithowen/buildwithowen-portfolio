@@ -9,50 +9,62 @@
 .controls { display: flex; align-items: center; gap: 20px; max-width: 230px; margin-top: 24px; }
 .counter { font-size: 15px; font-weight: 500; white-space: nowrap; }
 .counter span { color: var(--muted); font-size: 12px; font-weight: 400; }
-.pause { border: 0; background: transparent; min-width: 44px; min-height: 44px; padding: 8px; color: var(--muted); font-size: 12px; }
 .progress { height: 1px; flex: 1; background: var(--border); overflow: hidden; }
-.progress span { display: block; height: 100%; background: var(--blue); transform: scaleX(0); transform-origin: left; }
-.progressActive { animation: projectProgress linear forwards; }
-.visual { position: relative; min-width: 0; }
-.preview { position: relative; aspect-ratio: 1.3; min-width: 0; touch-action: pan-y; cursor: grab; user-select: none; isolation: isolate; }
-.preview:active { cursor: grabbing; }
-.preview:focus-visible { outline-offset: -4px; border-radius: 16px; }
-.deckCard {
-  --stack-x: 32px;
-  --stack-y: -40px;
-  --stack-scale: .055;
+.progress span { display: block; height: 100%; background: var(--blue); transform-origin: left; transition: transform 550ms ease; }
+.composition { min-width: 0; position: relative; touch-action: pan-y; }
+.composition:focus-visible { outline-offset: 8px; border-radius: 12px; }
+.lineup {
+  --step: 32px;
+  --rise: 21px;
+  --visible-count: var(--count);
+  --screen-width: calc(100cqw - (var(--visible-count) - 1) * var(--step) - 16px);
+  position: relative;
+  container-type: inline-size;
+  aspect-ratio: 1.26;
+  isolation: isolate;
+}
+.cardSlot {
+  --deck-scale: var(--scale);
   position: absolute;
-  top: 68px;
+  width: var(--screen-width);
+  top: 28px;
   left: 8px;
-  right: 76px;
-  aspect-ratio: 1.55;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  color: inherit;
+  transform: translate(calc(var(--position) * var(--step)), calc(var(--position) * var(--rise))) scale(var(--deck-scale));
+  transform-origin: top left;
+  transition: transform 650ms cubic-bezier(.22,1,.36,1);
+  cursor: pointer;
+}
+.window {
+  display: block;
+  background: #fff;
   border: 1px solid var(--border);
   border-radius: 12px;
-  background: #fff;
-  box-shadow: 0 28px 64px rgb(0 0 0 / 14%), 0 4px 12px rgb(0 0 0 / 5%);
-  transform-origin: center;
-  transform: translate(calc(var(--rank) * var(--stack-x)), calc(var(--rank) * var(--stack-y))) scale(calc(1 - var(--rank) * var(--stack-scale)));
-  opacity: calc(1 - var(--rank) * .1);
-  transition: transform 800ms cubic-bezier(.22,.61,.36,1), opacity 800ms ease, box-shadow 800ms ease;
-  pointer-events: none;
+  box-shadow: 0 calc(14px - var(--position) * .5px) calc(34px - var(--position) * .8px) rgb(0 0 0 / calc(.10 - var(--position) * .004)), 0 2px 6px rgb(0 0 0 / 3%);
+  transform: translateY(0);
+  transform-origin: top left;
+  opacity: calc(1 - var(--position) * .014);
+  transition: transform 650ms cubic-bezier(.22,1,.36,1), opacity 650ms ease, box-shadow 650ms ease;
 }
-.deckCard img { object-fit: contain; object-position: center; border-radius: 11px; }
-.deckCard[data-rank="1"] { box-shadow: 0 18px 38px rgb(0 0 0 / 10%), 0 3px 8px rgb(0 0 0 / 4%); }
-.deckCard[data-rank="2"] { box-shadow: 0 12px 28px rgb(0 0 0 / 7%), 0 2px 6px rgb(0 0 0 / 3%); }
-.deckCard.departing { transform: translate(0, 48px) scale(.97); opacity: 0; box-shadow: 0 12px 24px rgb(0 0 0 / 4%); }
-@keyframes projectProgress { to { transform: scaleX(1); } }
-@keyframes editorialEnter { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes cardArrive { from { opacity: .6; transform: translate(0, 22px) scale(.965); } to { opacity: 1; transform: translate(0, 0) scale(1); } }
-@media (prefers-reduced-motion: no-preference) {
-  .copyEnter { animation: editorialEnter 650ms ease both; }
-  .arriving { animation: cardArrive 800ms cubic-bezier(.22,.61,.36,1) both; }
-}
+.active .window { transform: translateY(-8px) scale(1); opacity: 1; box-shadow: 0 28px 60px rgb(0 0 0 / 15%), 0 4px 12px rgb(0 0 0 / 5%); }
+.windowBar { height: 32px; display: flex; align-items: center; gap: 10px; padding: 0 12px; border-bottom: 1px solid var(--border); color: var(--muted); background: #fff; border-radius: 11px 11px 0 0; }
+.dots { display: flex; flex-shrink: 0; gap: 4px; }
+.dots i { width: 4px; height: 4px; border-radius: 50%; background: #c7cdd4; }
+.windowName { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; }
+.screenshot { display: block; position: relative; aspect-ratio: 1.55; background: #fff; border-radius: 0 0 11px 11px; }
+.screenshot img { object-fit: contain; border-radius: inherit; }
+.cardSlot:focus-visible { outline: none; }
+.cardSlot:focus-visible .window { outline: 2px solid var(--blue); outline-offset: 4px; }
+@keyframes copyEnter { from { opacity: .3; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion: no-preference) { .copy { animation: copyEnter 450ms ease both; } }
 @media (max-width: 1100px) {
   .grid { gap: 40px; }
   .copy h2 { font-size: 38px; }
-  .deckCard { top: 52px; right: 64px; --stack-x: 22px; --stack-y: -28px; --stack-scale: .05; }
-  .deckCard.departing { transform: translate(0, 32px) scale(.97); }
-  .preview { aspect-ratio: 1.15; }
+  .lineup { --step: 24px; --rise: 19px; aspect-ratio: 1.1; }
 }
 @media (max-width: 900px) {
   .showcase { padding-block: 96px; }
@@ -62,9 +74,9 @@
   .copy h2 { font-size: 44px; }
   .description { max-width: 540px; }
   .controls { margin-top: 12px; }
-  .visual { width: 100%; max-width: 740px; margin-inline: auto; }
-  .preview { aspect-ratio: 1.55; }
-  .deckCard { left: 16px; right: 80px; --stack-x: 32px; --stack-y: -32px; }
+  .composition { width: 100%; max-width: 740px; margin-inline: auto; }
+  .lineup { --visible-count: 6; --step: 24px; --rise: 18px; aspect-ratio: 1.2; }
+  .cardSlot:not(:where([data-position="0"], [data-position="1"], [data-position="2"], [data-position="3"], [data-position="4"], [data-position="5"])) { visibility: hidden; pointer-events: none; }
 }
 @media (max-width: 600px) {
   .showcase { padding-block: 80px; }
@@ -73,15 +85,15 @@
   .copyStack { min-height: 260px; }
   .copy h2 { font-size: 34px; letter-spacing: -1px; }
   .description { font-size: 15px; line-height: 1.7; }
-  .preview { aspect-ratio: 1.25; }
-  .deckCard { top: 24px; left: 0; right: 16px; border-radius: 10px; --stack-x: 12px; --stack-y: -16px; --stack-scale: .04; }
-  .deckCard img { border-radius: 9px; }
-  .deckCard[data-rank="2"] { visibility: hidden; }
-  .deckCard.departing { transform: translate(0, 18px) scale(.98); }
+  .lineup { --visible-count: 4; --screen-width: calc(100cqw - 48px); --step: 16px; --rise: 16px; aspect-ratio: 1.05; }
+  .cardSlot { --deck-scale: calc(1 - var(--position) * .015); top: 30px; }
+  .cardSlot:not(:where([data-position="0"], [data-position="1"], [data-position="2"], [data-position="3"])) { visibility: hidden; pointer-events: none; }
+  .window { opacity: calc(1 - var(--position) * .06); }
+  .active .window { transform: translateY(-4px) scale(1); }
+  .windowBar { padding-right: 12px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .deckCard { transition: none; transform: none; opacity: 1; }
-  .deckCard[data-rank="1"], .deckCard[data-rank="2"], .deckCard.departing { visibility: hidden; }
-  .copyEnter, .arriving, .progressActive { animation: none !important; }
+  .window, .progress span, .cardSlot { transition: none; }
+  .copy { animation: none; }
 }
 .srOnly { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
