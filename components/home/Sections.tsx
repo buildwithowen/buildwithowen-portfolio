@@ -1,7 +1,12 @@
 import ProjectsCarousel from "./ProjectsCarousel";
 import Image from "next/image";
 import Icon from "./Icon";
-import { technologies, testimonialData, portraitImage } from "./data";
+import {
+  technologies,
+  technologyLogos,
+  testimonialData,
+  portraitImage,
+} from "./data";
 import s from "./home.module.css";
 
 export function Stats() {
@@ -275,30 +280,20 @@ export function TechStack() {
           </p>
         </div>
         <div className={s.techGrid}>
-          {technologies.map((tech, i) => (
+          {technologies.map((tech) => (
             <div key={tech}>
-              <span
-                aria-hidden="true"
-                className={i % 3 === 0 ? s.techBlue : ""}
-              >
-                {
-                  [
-                    "N",
-                    "⚛",
-                    "TS",
-                    "W",
-                    "H5",
-                    "#",
-                    "≈",
-                    "JS",
-                    "▲",
-                    "▥",
-                    "◇",
-                    "↗",
-                    "∞",
-                    "⇄",
-                  ][i]
-                }
+              <span aria-hidden="true" className={s.techVisual}>
+                {technologyLogos[tech] ? (
+                  <Image
+                    src={technologyLogos[tech]}
+                    alt=""
+                    width={36}
+                    height={36}
+                    className={s.techLogo}
+                  />
+                ) : (
+                  <Icon kind="connect" className={s.techIntegrationIcon} />
+                )}
               </span>
               <strong>{tech}</strong>
             </div>

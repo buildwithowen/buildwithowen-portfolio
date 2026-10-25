@@ -1,3 +1,4 @@
+import PortfolioShowcase from "@/components/home/PortfolioShowcase";
 import Header from "@/components/home/Header";
 import Hero from "@/components/home/Hero";
 import ContactCTA from "@/components/home/ContactCTA";
@@ -40,6 +41,7 @@ export default function Home() {
       <main id="main">
         <Hero />
         <Stats />
+        <PortfolioShowcase />
         <Services />
         <FullStackAdvantage />
         <Projects />

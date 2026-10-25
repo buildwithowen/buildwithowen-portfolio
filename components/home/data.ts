@@ -122,3 +122,20 @@ export const technologies = [
   "Meta Ads",
   "CRM Integrations",
 ];
+
+// Original local SVG artwork; the visible technology name provides its accessible label.
+export const technologyLogos: Record<string, string> = {
+  "Next.js": "/images/tools/nextjs.svg",
+  React: "/images/tools/react.svg",
+  TypeScript: "/images/tools/typescript.svg",
+  WordPress: "/images/tools/wordpress.svg",
+  HTML: "/images/tools/html5.svg",
+  CSS: "/images/tools/css.svg",
+  Tailwind: "/images/tools/tailwind.svg",
+  "Node.js": "/images/tools/nodejs.svg",
+  Vercel: "/images/tools/vercel.svg",
+  "Google Analytics": "/images/tools/google-analytics.svg",
+  "Google Tag Manager": "/images/tools/google-tag-manager.svg",
+  "Google Ads": "/images/tools/google-ads.svg",
+  "Meta Ads": "/images/tools/meta.svg",
+};
