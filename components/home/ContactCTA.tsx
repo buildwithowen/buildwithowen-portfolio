@@ -42,7 +42,7 @@ export default function ContactCTA() {
     } catch {
       setStatus("error");
       setError(
-        "Unable to send your message. Please try again or email owengenuino26@gmail.com.",
+        "Unable to send your message. Please try again or email info@buildwithowen.com.",
       );
     }
   }
@@ -75,8 +75,8 @@ export default function ContactCTA() {
           </div>
           <div className={s.directContact}>
             <span>PREFER EMAIL?</span>
-            <a href="mailto:owengenuino26@gmail.com">
-              owengenuino26@gmail.com <Icon />
+            <a href="mailto:info@buildwithowen.com">
+              info@buildwithowen.com <Icon />
             </a>
           </div>
         </div>
