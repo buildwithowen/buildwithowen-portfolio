@@ -203,7 +203,6 @@
   min-width: 0;
   height: 535px;
   isolation: isolate;
-  font-family: var(--font-poppins), Arial, sans-serif;
 }
 .orbit {
   position: absolute;

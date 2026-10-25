@@ -1,16 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  useSyncExternalStore,
-  type CSSProperties,
-} from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore, type CSSProperties } from "react";
 import { projects } from "./data";
-import asahiFullPage from "@/public/images/hero-asahi-move.png";
 import s from "./PortfolioShowcase.module.css";
 
 function subscribeMotion(callback: () => void) {
@@ -22,185 +14,71 @@ function motionSnapshot() {
   return matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
-// Spotlight-only full-page variant; the shared project data and assets stay unchanged.
-const fullPageScreenshots = { "Asahi Removals": asahiFullPage };
-const previewSizes =
-  "(max-width: 600px) calc(100vw - 32px), (max-width: 900px) calc(100vw - 48px), 960px";
-
-const overlayDetails: Record<string, { title: string; detail: string }> = {
-  "Travel & Tourism": {
-    title: "Travel & Tourism",
-    detail: "Discovery & booking information",
+// Editorial copy is local to this spotlight; shared project content stays intact.
+const editorialCopy: Record<string, { industry: string; description: string }> = {
+  "RZE Travel & Tours": {
+    industry: "Travel & Tourism",
+    description: "Digital experiences designed to make discovery, enquiries and bookings feel simple.",
   },
-  "Moving & Relocation": {
-    title: "Moving & Relocation",
-    detail: "Customer enquiry journey",
+  "Next Move Removals": {
+    industry: "Moving & Relocation",
+    description: "Lead-focused digital experiences built for service businesses.",
   },
-  "Outsourcing Services": {
-    title: "Business Services",
-    detail: "Service enquiry pathways",
+  "TOC Outsourcing": {
+    industry: "Outsourcing Services",
+    description: "Professional digital platforms built to present services and convert enquiries.",
   },
-  "Automotive / Auto Care": {
-    title: "Auto Care",
-    detail: "Services & local enquiries",
-  },
-  "Furniture & Interiors": {
-    title: "Furniture & Interiors",
-    detail: "Product browsing experience",
+  "Choose A Mover": {
+    industry: "Marketplace Platform",
+    description: "A custom moving marketplace connecting customers, removalists, leads and quote credits.",
   },
 };
 
-function ProjectScreen({
-  project,
-  first,
-  playing,
-  duration,
-}: {
-  project: (typeof projects)[number];
-  first: boolean;
-  playing: boolean;
-  duration: number;
-}) {
-  const [loaded, setLoaded] = useState(false);
-  const fullPage =
-    fullPageScreenshots[project.name as keyof typeof fullPageScreenshots];
-  const overlay = overlayDetails[project.category] ?? {
-    title: project.category,
-    detail: "A considered digital experience",
-  };
-  return (
-    <div
-      className={`${s.sceneStage} ${playing && loaded ? s.scenePlaying : ""}`}
-      style={{ "--scene-duration": `${duration}ms` } as CSSProperties}
-    >
-      <div className={s.sceneViewport}>
-        {fullPage ? (
-          <div className={s.panViewport}>
-            <Image
-              src={fullPage}
-              alt={`${project.name} full-page website preview`}
-              className={s.panImage}
-              onLoad={() => setLoaded(true)}
-              draggable={false}
-              sizes={previewSizes}
-              preload={first}
-            />
-          </div>
-        ) : (
-          <div className={s.wideVisual}>
-            <Image
-              src={project.image}
-              alt={`${project.name} website preview`}
-              fill
-              onLoad={() => setLoaded(true)}
-              draggable={false}
-              preload={first}
-              sizes={previewSizes}
-            />
-          </div>
-        )}
-      </div>
-      <div className={s.overlayRail} aria-hidden="true">
-        <span className={s.railLabel}>
-          <i /> INDUSTRY IN FOCUS
-        </span>
-        <div className={s.overlayCard}>
-          <span className={s.overlayIcon}>
-            <svg
-              width="18"
-              height="18"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-            >
-              <rect x="3" y="4" width="18" height="16" rx="3" />
-              <path d="M3 9h18M8 14h3m-3 3h8" />
-            </svg>
-          </span>
-          <div>
-            <strong>{overlay.title}</strong>
-            <span className={s.overlayDetail}>{overlay.detail}</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-export default function PortfolioShowcase({
-  items = projects,
-  interval = 8500,
-}: {
+export default function PortfolioShowcase({ items = projects, interval = 7000 }: {
   items?: typeof projects;
   interval?: number;
 }) {
   const root = useRef<HTMLElement>(null);
   const gesture = useRef<{ x: number; y: number } | null>(null);
-  const wheelTime = useRef(0);
-  const [scene, setScene] = useState({
-    index: 0,
-    previous: null as number | null,
-  });
+  const wheelGesture = useRef({ lastEvent: 0, lastChange: 0, delta: 0, consumed: false });
+  const wheelReset = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [scene, setScene] = useState({ index: 0, previous: null as number | null, direction: 1 });
   const [inView, setInView] = useState(false);
   const [pageVisible, setPageVisible] = useState(true);
   const [paused, setPaused] = useState(false);
   const [hovered, setHovered] = useState(false);
   const [focused, setFocused] = useState(false);
   const [interacting, setInteracting] = useState(false);
-  const reduced = useSyncExternalStore(
-    subscribeMotion,
-    motionSnapshot,
-    () => true,
-  );
-  const running =
-    items.length > 1 &&
-    inView &&
-    pageVisible &&
-    !paused &&
-    !hovered &&
-    !focused &&
-    !interacting &&
-    !reduced;
+  const reduced = useSyncExternalStore(subscribeMotion, motionSnapshot, () => true);
+  const running = items.length > 1 && inView && pageVisible && !paused && !hovered && !focused && !interacting && !reduced;
 
-  const advance = useCallback(
-    (direction: number) => {
-      setScene((current) => ({
-        index: (current.index + direction + items.length) % items.length,
-        previous: reduced ? null : current.index,
-      }));
-    },
-    [items.length, reduced],
-  );
+  const advance = useCallback((direction: number) => {
+    if (items.length < 2) return;
+    setScene(current => ({
+      index: (current.index + direction + items.length) % items.length,
+      previous: reduced ? null : current.index,
+      direction,
+    }));
+  }, [items.length, reduced]);
 
   useEffect(() => {
     const element = root.current;
     if (!element) return;
-    const observer = new IntersectionObserver(
-      (entries) => setInView(entries[0].isIntersecting),
-      { threshold: 0.2 },
-    );
+    const observer = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting), { threshold: 0.2 });
     observer.observe(element);
     const visibility = () => setPageVisible(!document.hidden);
+    visibility();
     document.addEventListener("visibilitychange", visibility);
     return () => {
       observer.disconnect();
       document.removeEventListener("visibilitychange", visibility);
+      if (wheelReset.current) clearTimeout(wheelReset.current);
     };
   }, []);
 
   useEffect(() => {
-    if (!reduced) return;
-    const timer = setTimeout(() => setScene({ index: 0, previous: null }), 0);
-    return () => clearTimeout(timer);
-  }, [reduced]);
-
-  useEffect(() => {
     if (scene.previous === null) return;
-    const timer = setTimeout(
-      () => setScene((current) => ({ ...current, previous: null })),
-      reduced ? 0 : 750,
-    );
+    const timer = setTimeout(() => setScene(current => ({ ...current, previous: null })), reduced ? 0 : 800);
     return () => clearTimeout(timer);
   }, [scene.index, scene.previous, reduced]);
 
@@ -211,171 +89,121 @@ export default function PortfolioShowcase({
   }, [running, scene.index, scene.previous, interval, advance]);
 
   if (!items.length) return null;
-  const current = items[scene.index];
-  const layers =
-    scene.previous === null ? [scene.index] : [scene.previous, scene.index];
+  const activeIndex = scene.index % items.length;
+  const current = items[activeIndex];
+  const copy = editorialCopy[current.name] ?? { industry: current.category, description: current.description };
+  const deck = Array.from({ length: Math.min(3, items.length) }, (_, rank) => ({ index: (activeIndex + rank) % items.length, rank }));
+  if (!reduced && scene.previous !== null && !deck.some(card => card.index === scene.previous)) {
+    deck.push({ index: scene.previous, rank: -1 });
+  }
+
   function endGesture(x: number, y: number) {
     const start = gesture.current;
     gesture.current = null;
     setInteracting(false);
     if (!start) return;
     const dx = x - start.x;
-    if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(y - start.y) * 1.2)
-      advance(dx < 0 ? 1 : -1);
+    const dy = y - start.y;
+    if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.2) advance(dx < 0 ? 1 : -1);
+    else if (Math.abs(dy) > 45 && Math.abs(dy) > Math.abs(dx) * 1.2) advance(dy < 0 ? 1 : -1);
   }
 
   return (
-    <section
-      ref={root}
-      className={`section ${s.showcase}`}
-      aria-label="Featured portfolio spotlight"
-      onMouseEnter={() => {
-        if (matchMedia("(hover: hover) and (pointer: fine)").matches)
-          setHovered(true);
-      }}
+    <section ref={root} className={`section ${s.showcase}`} aria-label="Featured portfolio spotlight"
+      onMouseEnter={() => { if (matchMedia("(hover: hover) and (pointer: fine)").matches) setHovered(true); }}
       onMouseLeave={() => setHovered(false)}
-      onFocusCapture={(event) =>
-        setFocused((event.target as HTMLElement).matches(":focus-visible"))
-      }
-      onBlurCapture={(event) => {
-        if (!event.currentTarget.contains(event.relatedTarget))
-          setFocused(false);
-      }}
-      onKeyDown={(event) => {
-        if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
-          event.preventDefault();
-          setFocused(true);
-          advance(event.key === "ArrowRight" ? 1 : -1);
+      onFocusCapture={() => setFocused(true)}
+      onBlurCapture={event => { if (!event.currentTarget.contains(event.relatedTarget)) setFocused(false); }}
+      onWheel={event => {
+        if (event.ctrlKey || !inView || items.length < 2 ||
+          !matchMedia("(min-width: 601px) and (hover: hover) and (pointer: fine)").matches) return;
+        const horizontal = Math.abs(event.deltaX) > Math.abs(event.deltaY);
+        const unit = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? window.innerHeight : 1;
+        const delta = (horizontal ? event.deltaX : event.deltaY) * unit;
+        if (Math.abs(delta) < 1) return;
+        const now = performance.now();
+        const wheel = wheelGesture.current;
+        // Treat trackpad momentum as one gesture, with an additional transition cooldown.
+        if (now - wheel.lastEvent > 300) {
+          wheel.delta = 0;
+          wheel.consumed = false;
         }
+        wheel.lastEvent = now;
+        setInteracting(true);
+        if (wheelReset.current) clearTimeout(wheelReset.current);
+        wheelReset.current = setTimeout(() => setInteracting(false), 1100);
+        if (wheel.consumed || (wheel.lastChange > 0 && now - wheel.lastChange < 900)) return;
+        wheel.delta += delta;
+        if (Math.abs(wheel.delta) < 60) return;
+        wheel.consumed = true;
+        const direction = wheel.delta > 0 ? 1 : -1;
+        const index = scene.index % items.length;
+        // Wheel navigation never wraps or cancels native page scrolling.
+        if ((direction < 0 && index === 0) || (direction > 0 && index === items.length - 1)) return;
+        wheel.lastChange = now;
+        advance(direction);
       }}
-    >
+      onKeyDown={event => {
+        if (["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(event.key)) {
+          event.preventDefault();
+          advance(event.key === "ArrowRight" || event.key === "ArrowDown" ? 1 : -1);
+        }
+      }}>
       <div className={`container ${s.grid}`}>
         <div className={s.textColumn}>
-          <p className="eyebrow">A CLOSER LOOK AT THE WORK</p>
+          <p className="eyebrow">INDUSTRY SPOTLIGHT</p>
           <div className={s.copyStack}>
-            {layers.map((index) => (
-              <div
-                key={index}
-                aria-hidden={index !== scene.index ? true : undefined}
-                className={`${s.copy} ${scene.previous !== null ? (index === scene.index ? s.enter : s.exit) : ""}`}
-              >
-                <span className={s.industryLabel}>INDUSTRY SPOTLIGHT</span>
-                <h2>
-                  {items[index].category}
-                  <span className="blue">.</span>
-                </h2>
-                <p className={s.description}>{items[index].description}</p>
-                <p className={s.company}>{items[index].name}</p>
+            <div key={activeIndex} className={`${s.copy} ${scene.previous !== null ? s.copyEnter : ""}`}>
+              <h2><span className={s.accent}>{copy.industry}</span>.</h2>
+              <p className={s.description}>{copy.description}</p>
+              <p className={s.company}>{current.name}</p>
+            </div>
+          </div>
+          <div className={s.controls}>
+            <span className={s.counter} role="status" aria-live={focused ? "polite" : "off"} aria-label={`Project ${activeIndex + 1} of ${items.length}: ${current.name}`}>
+              {String(activeIndex + 1).padStart(2, "0")}<span> / {String(items.length).padStart(2, "0")}</span>
+            </span>
+            <div className={s.progress} aria-hidden="true">
+              <span key={`${activeIndex}-${running && scene.previous === null}`}
+                className={running && scene.previous === null ? s.progressActive : undefined}
+                style={{ animationDuration: `${interval}ms` }} />
+            </div>
+            {!reduced && <button type="button" className={s.pause} aria-pressed={paused} onClick={() => setPaused(value => !value)}>
+              <span aria-hidden="true">{paused ? "▶" : "Ⅱ"}</span>
+              <span className={s.srOnly}>{paused ? "Play" : "Pause"} portfolio spotlight</span>
+            </button>}
+          </div>
+        </div>
+        <div className={s.visual}>
+          <p id="portfolio-navigation-help" className={s.srOnly}>
+            Use the arrow keys to change projects. Swipe left or right on touch screens.
+          </p>
+          <div className={s.preview} role="group" tabIndex={0}
+            aria-label="Featured website preview. Swipe, drag, or use arrow keys to change project."
+            aria-describedby="portfolio-navigation-help"
+            aria-keyshortcuts="ArrowLeft ArrowRight ArrowUp ArrowDown"
+            onPointerDown={event => {
+              if (wheelReset.current) clearTimeout(wheelReset.current);
+              gesture.current = { x: event.clientX, y: event.clientY };
+              setInteracting(true);
+              event.currentTarget.setPointerCapture(event.pointerId);
+            }}
+            onPointerUp={event => endGesture(event.clientX, event.clientY)}
+            onPointerCancel={() => { gesture.current = null; setInteracting(false); }}
+            onLostPointerCapture={() => { gesture.current = null; setInteracting(false); }}
+            >
+            {deck.map(({ index, rank }) => (
+              <div key={items[index].name}
+                className={`${s.deckCard} ${rank === -1 ? s.departing : ""} ${rank === 0 && scene.previous !== null && scene.direction < 0 ? s.arriving : ""}`}
+                style={{ "--rank": Math.max(0, rank), zIndex: rank === -1 ? 5 : 4 - rank } as CSSProperties}
+                data-rank={rank} aria-hidden={rank !== 0 ? true : undefined}>
+                <Image src={items[index].image} alt={rank === 0 ? `${items[index].name} website preview` : ""}
+                  fill sizes="(max-width: 600px) calc(100vw - 64px), (max-width: 900px) calc(100vw - 160px), (max-width: 1100px) 50vw, 700px"
+                  preload={rank === 0} draggable={false} />
               </div>
             ))}
           </div>
-          <div className={s.controls}>
-            <button
-              type="button"
-              className={s.counter}
-              onClick={() => advance(1)}
-              aria-label={`Next featured project. Showing ${scene.index + 1} of ${items.length}: ${current.name}`}
-              title="Next project"
-            >
-              {String(scene.index + 1).padStart(2, "0")}
-              <span> / {String(items.length).padStart(2, "0")}</span>
-            </button>
-            <div className={s.progress} aria-hidden="true">
-              <span
-                key={`${scene.index}-${running && scene.previous === null}`}
-                className={
-                  running && scene.previous === null
-                    ? s.progressActive
-                    : undefined
-                }
-                style={{ animationDuration: `${interval}ms` }}
-              />
-            </div>
-            {!reduced && (
-              <button
-                type="button"
-                className={s.pause}
-                aria-pressed={paused}
-                onClick={() => setPaused((value) => !value)}
-              >
-                <span aria-hidden="true">{paused ? "▶" : "Ⅱ"}</span>
-                <span className={s.srOnly}>
-                  {paused ? "Play" : "Pause"} portfolio spotlight
-                </span>
-              </button>
-            )}
-          </div>
-        </div>
-        <div
-          className={s.preview}
-          role="group"
-          aria-label="Featured website preview. Swipe, drag, or use arrow keys to change project."
-          tabIndex={0}
-          onPointerDown={(event) => {
-            gesture.current = { x: event.clientX, y: event.clientY };
-            setInteracting(true);
-            event.currentTarget.setPointerCapture(event.pointerId);
-          }}
-          onPointerUp={(event) => endGesture(event.clientX, event.clientY)}
-          onPointerCancel={() => {
-            gesture.current = null;
-            setInteracting(false);
-          }}
-          onLostPointerCapture={() => {
-            gesture.current = null;
-            setInteracting(false);
-          }}
-          onWheel={(event) => {
-            if (
-              Math.abs(event.deltaX) > 25 &&
-              Math.abs(event.deltaX) > Math.abs(event.deltaY) &&
-              performance.now() - wheelTime.current > 800
-            ) {
-              wheelTime.current = performance.now();
-              advance(event.deltaX > 0 ? 1 : -1);
-            }
-          }}
-        >
-          <div className={s.backplate} aria-hidden="true" />
-          <div className={s.browser}>
-            <div className={s.browserBar} aria-hidden="true">
-              <span className={s.dots}>
-                <i />
-                <i />
-                <i />
-              </span>
-              <span>BUILD WITH OWEN · PROJECT SPOTLIGHT</span>
-              <Image
-                src="/images/build-with-owen-logo.png"
-                alt="Build With Owen"
-                width={20}
-                height={20}
-              />
-            </div>
-            <div className={s.screen}>
-              {layers.map((index) => (
-                <div
-                  key={index}
-                  aria-hidden={index !== scene.index ? true : undefined}
-                  className={`${s.imageLayer} ${scene.previous !== null ? (index === scene.index ? s.enter : s.exit) : ""}`}
-                >
-                  <ProjectScreen
-                    project={items[index]}
-                    duration={interval}
-                    first={index === 0}
-                    playing={
-                      running &&
-                      scene.previous === null &&
-                      index === scene.index
-                    }
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-          <p className={s.caption}>
-            REAL PROJECTS. DIFFERENT INDUSTRIES. ONE CONSIDERED APPROACH.
-          </p>
+
         </div>
       </div>
     </section>

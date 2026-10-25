@@ -21,3 +21,5 @@ Original SVG artwork is stored locally without recoloring. Light-background vari
 The eleven SVGL assets were downloaded from the corresponding `static/library` files in https://github.com/pheralb/svgl.
 
 CRM Integrations uses the existing neutral `connect` icon in `components/home/Icon.tsx`; it is not a company logo.
+
+Google Reviews branding: `google.svg` from https://raw.githubusercontent.com/pheralb/svgl/main/static/library/google.svg (SVGL).

@@ -35,7 +35,7 @@ body {
   margin: 0;
   background: #fff;
   color: var(--ink);
-  font-family: var(--font-poppins), Arial, sans-serif;
+  font-family: var(--font-montserrat), Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 a {
@@ -47,6 +47,12 @@ input,
 select,
 textarea {
   font: inherit;
+}
+code,
+pre,
+kbd,
+samp {
+  font-family: inherit;
 }
 button,
 a,

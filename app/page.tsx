@@ -1,3 +1,4 @@
+import GoogleReviews from "@/components/home/GoogleReviews";
 import PortfolioShowcase from "@/components/home/PortfolioShowcase";
 import Header from "@/components/home/Header";
 import Hero from "@/components/home/Hero";
@@ -42,6 +43,7 @@ export default function Home() {
         <Hero />
         <Stats />
         <PortfolioShowcase />
+        <GoogleReviews />
         <Services />
         <FullStackAdvantage />
         <Projects />
