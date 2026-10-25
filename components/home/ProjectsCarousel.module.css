@@ -1,0 +1,134 @@
+.carousel {
+  --project-gap: 23px;
+  --project-columns: 3;
+  --project-shadow-gutter: min(16px, var(--project-gap));
+  min-width: 0;
+}
+.track {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: calc(
+    (100% - (var(--project-columns) - 1) * var(--project-gap)) /
+      var(--project-columns)
+  );
+  gap: var(--project-gap);
+  padding: 20px var(--project-shadow-gutter) 40px;
+  margin: -20px calc(-1 * var(--project-shadow-gutter)) -40px;
+  scroll-padding-inline: var(--project-shadow-gutter);
+  overflow-x: auto;
+  scroll-snap-type: none;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+.track::-webkit-scrollbar {
+  display: none;
+}
+.track:focus-visible {
+  outline-offset: -3px;
+}
+.card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  box-shadow:
+    0 10px 30px #00000014,
+    0 2px 8px #0000000a;
+  transition:
+    translate 300ms ease,
+    box-shadow 300ms ease;
+}
+@media (max-width: 1100px) {
+  .carousel {
+    --project-gap: 15px;
+    --project-columns: 2;
+  }
+}
+@media (max-width: 600px) {
+  .carousel {
+    --project-gap: 23px;
+    --project-columns: 1;
+  }
+}
+
+/* Let descriptions grow while preserving aligned card heights. */
+.card > div:first-child {
+  flex-shrink: 0;
+}
+.card > div:last-child {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+@keyframes projectReveal {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .reveal {
+    animation: projectReveal 420ms ease var(--project-reveal-delay, 0ms) both;
+  }
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .card:hover {
+    translate: 0 -5px;
+    box-shadow:
+      0 12px 24px #0000001f,
+      0 3px 9px #0000000d;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
+}
+
+.card .industry {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.3px;
+  text-transform: uppercase;
+  margin: 0 0 9px;
+}
+.card .company {
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.65;
+  margin: 0 0 14px;
+}
+.track {
+  cursor: grab;
+}
+.dragging,
+.dragging * {
+  cursor: grabbing;
+  user-select: none;
+}
+.motionControl {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+.motionControl button {
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.65;
+  padding: 8px 0 8px 12px;
+  min-height: 44px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .duplicate,
+  .motionControl {
+    display: none;
+  }
+}
