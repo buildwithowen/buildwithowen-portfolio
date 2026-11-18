@@ -214,7 +214,7 @@ export default function ProjectsCarousel() {
                   alt={`${project.name} website screenshot`}
                   fill
                   draggable={false}
-                  sizes="(max-width: 600px) calc(100vw - 40px), (max-width: 900px) calc((100vw - 63px) / 2), (max-width: 1100px) calc((100vw - 111px) / 2), 420px"
+                  sizes="(min-width: 1600px) 520px, (max-width: 600px) calc(100vw - 40px), (max-width: 900px) calc((100vw - 63px) / 2), (max-width: 1100px) calc((100vw - 111px) / 2), 420px"
                 />
               </div>
               <div className={s.projectInfo}>

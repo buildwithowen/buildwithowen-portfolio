@@ -1,4 +1,5 @@
 import Image from "next/image";
+import CinematicHero from "./CinematicHero";
 import asahiScreenshot from "@/public/images/hero-asahi-move.png";
 import Icon from "./Icon";
 import s from "./home.module.css";
@@ -19,7 +20,7 @@ export function SystemPreview() {
             <i />
           </span>
           <span className={s.address}>yourbusiness.com</span>
-          <span>↗</span>
+          
         </div>
         <div className={s.browserScreen}>
           <Image
@@ -39,9 +40,9 @@ export function SystemPreview() {
           Website insights <span className={s.liveDot} />
         </span>
         <strong>
-          Built for growth <span>↗</span>
+          Built for growth 
         </strong>
-        <p>Traffic → enquiries → opportunity</p>
+        <p>Traffic · enquiries · opportunity</p>
         <svg viewBox="0 0 250 80" fill="none" aria-hidden="true">
           <path d="M0 66H250M0 35H250M0 4H250" stroke="#e8edf3" />
           <path
@@ -74,7 +75,7 @@ export function SystemPreview() {
         <div>
           <strong>A new enquiry. Connected.</strong>
           <span>
-            Website <b>→</b> CRM <b>→</b> Follow-up
+            Website <b>·</b> CRM <b>·</b> Follow-up
           </span>
         </div>
         <span className={s.liveDot} />
@@ -88,55 +89,5 @@ export function SystemPreview() {
 }
 
 export default function Hero() {
-  return (
-    <section className={s.hero} aria-labelledby="hero-heading">
-      <div className={`container ${s.heroGrid}`}>
-        <div className={s.heroCopy}>
-          <p className={s.eyebrow}>
-            <span className={s.liveDot} /> FULL STACK WEB DEVELOPER
-          </p>
-          <h1 id="hero-heading">
-            Full Stack
-            <br />
-            Websites.
-            <br />
-            <span>
-              Built to Win
-              <br />
-              Business.
-            </span>
-          </h1>
-          <p className={s.heroDescription}>
-            I’m Owen. I design and build high-performance websites and digital
-            platforms — with the SEO, integrations and automation your business
-            needs to move forward.
-          </p>
-          <div className={s.chips}>
-            {["Next.js", "React", "WordPress", "SEO", "Automation"].map((t) => (
-              <span key={t}>{t}</span>
-            ))}
-          </div>
-          <div className={s.heroActions}>
-            <a href="#contact" className="button">
-              Start a Project <Icon />
-            </a>
-            <a href="#work" className={s.secondaryButton}>
-              View My Work <Icon />
-            </a>
-          </div>
-          <p className={s.confidence}>
-            <Icon kind="check" /> Business-focused <span>·</span> Built for
-            performance
-          </p>
-        </div>
-        <SystemPreview />
-      </div>
-      <div className={`container ${s.heroFoot}`}>
-        <span>GOOD DESIGN. SOLID CODE. REAL BUSINESS PURPOSE.</span>
-        <a href="#services">
-          Explore what’s possible <span>↓</span>
-        </a>
-      </div>
-    </section>
-  );
+  return <CinematicHero />;
 }

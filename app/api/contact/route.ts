@@ -36,7 +36,7 @@ export async function POST(request: Request) {
 
     const { data, error } = await resend.emails.send({
       from: "Build With Owen <onboarding@resend.dev>",
-      to: ["info@buildwithowen.com"],
+      to: ["info@buildwithowen.com", "owengenuino26@gmail.com"],
       replyTo: email,
       subject: `[NEW PROJECT] ${projectType} — ${name}`,
 

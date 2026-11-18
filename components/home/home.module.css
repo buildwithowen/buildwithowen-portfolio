@@ -62,12 +62,16 @@
   color: #fff;
 }
 .nav .navCta {
+  background: var(--brand-blue);
   color: #fff;
   margin-left: 10px;
   font-size: var(--home-action, 11px);
   padding: 11px 17px;
   min-height: 42px;
   gap: 20px;
+}
+.nav .navCta:hover {
+  background: var(--brand-blue-hover);
 }
 .menuButton {
   display: none;
@@ -104,9 +108,9 @@
   display: inline-block;
   width: 6px;
   height: 6px;
-  background: var(--green);
+  background: var(--brand-blue);
   border-radius: 50%;
-  box-shadow: 0 0 0 4px #66c61c13;
+  box-shadow: 0 0 0 4px #119fee13;
   flex-shrink: 0;
 }
 .hero h1 {
@@ -171,7 +175,7 @@
   line-height: var(--home-copy-leading, normal);
 }
 .confidence svg {
-  color: var(--green);
+  color: var(--brand-blue);
   width: 12px;
   height: 12px;
 }
@@ -351,7 +355,7 @@
 }
 .mockNav b {
   background: #e6f2fe;
-  color: #0876bd;
+  color: var(--brand-blue);
   padding: 5px;
   border-radius: 3px;
 }
@@ -426,7 +430,7 @@
 }
 .mockArt div:nth-child(2) {
   height: 88%;
-  background: linear-gradient(#a9eb81, #66c61c);
+  background: linear-gradient(#79ccfa, #119fee);
 }
 .mockArt div:nth-child(3) {
   height: 110%;
@@ -494,7 +498,7 @@
   margin-top: 11px;
 }
 .analytics > strong > span {
-  color: var(--green);
+  color: var(--brand-blue);
 }
 .analytics > p {
   font-size: 7px;
@@ -540,7 +544,7 @@
 .codePanel i {
   width: 5px;
   height: 5px;
-  background: var(--green);
+  background: var(--brand-blue);
   border-radius: 50%;
 }
 .codePanel pre {
@@ -574,8 +578,8 @@
   transform: rotate(2deg);
 }
 .leadIcon {
-  background: #edfadf;
-  color: #579f21;
+  background: #eaf5ff;
+  color: var(--brand-blue);
   width: 31px;
   height: 31px;
   border-radius: 50%;
@@ -717,15 +721,15 @@
   width: 45px;
   height: 45px;
   background: #eaf5ff;
-  color: #0085e9;
+  color: var(--brand-blue);
   border-radius: 11px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 .greenIcon {
-  background: #f0f8e9;
-  color: #62a92e;
+  background: #eaf5ff;
+  color: var(--brand-blue);
 }
 .cardNumber {
   font-size: var(--home-meta, 10px);
@@ -754,7 +758,7 @@
 }
 .benefit svg {
   width: 14px;
-  color: #0089f7;
+  color: var(--brand-blue);
 }
 .advantage {
   background: var(--light);
@@ -787,8 +791,8 @@
   line-height: var(--home-copy-leading, normal);
 }
 .checkList svg {
-  background: #e7f5dd;
-  color: #5aa428;
+  background: #eaf5ff;
+  color: var(--brand-blue);
   padding: 3px;
   border-radius: 50%;
   width: 18px;
@@ -798,7 +802,7 @@
   display: inline-flex;
   align-items: center;
   gap: 17px;
-  color: #0079cc;
+  color: var(--brand-blue);
   font-size: var(--home-action, 11px);
   font-weight: 600;
   margin-top: 6px;
@@ -993,7 +997,7 @@
   display: inline-flex;
   font-size: 5px;
   font-style: normal;
-  background: #0089f7;
+  background: var(--brand-blue);
   color: #fff;
   border-radius: 3px;
   padding: 6px 9px;
@@ -1013,7 +1017,7 @@
   box-shadow: -18px 18px 0 #0089f71a;
 }
 .projectShape::after {
-  content: "↗";
+  content: none;
   position: absolute;
   font-size: 92px;
   inset: 7px 25px;
@@ -1021,27 +1025,27 @@
   transform: rotate(24deg);
 }
 .green {
-  background: #eff3e9;
-  color: #293e30;
+  background: #f2f6f8;
+  color: #1f2323;
 }
 .green .projectShape {
-  background: linear-gradient(140deg, #a9c29a, #355d41);
-  box-shadow: -18px 18px 0 #355d4119;
+  background: linear-gradient(140deg, #8fd4fb, #119fee);
+  box-shadow: -18px 18px 0 #119fee19;
 }
 .green .projectMockContent > i {
-  background: #355d41;
+  background: var(--brand-blue);
 }
 .sand {
-  background: #f5efe6;
-  color: #644d33;
+  background: #f2f6f8;
+  color: #1f2323;
 }
 .sand .projectShape {
-  background: linear-gradient(140deg, #e7c99d, #af814d);
+  background: linear-gradient(140deg, #8fd4fb, #119fee);
   border-radius: 50% 50% 4px 4px;
-  box-shadow: -18px 18px 0 #b594621a;
+  box-shadow: -18px 18px 0 #119fee1a;
 }
 .sand .projectMockContent > i {
-  background: #9e7445;
+  background: var(--brand-blue);
 }
 .previewBadge {
   position: absolute;
@@ -1218,7 +1222,7 @@
   margin-bottom: 26px;
 }
 .contact h2 > span {
-  color: #14a9fd;
+  color: var(--brand-blue);
 }
 .contactGrid > div > p:not(.eyebrow) {
   font-size: var(--home-body, 12px);
@@ -1243,7 +1247,7 @@
 .contactServices svg {
   width: 12px;
   height: 12px;
-  color: var(--green);
+  color: var(--brand-blue);
 }
 .directContact {
   border-top: 1px solid #ffffff15;
@@ -1291,7 +1295,7 @@
   margin-bottom: 17px;
 }
 .contactForm label > span {
-  color: #0089f7;
+  color: var(--brand-blue);
 }
 .contactForm input,
 .contactForm textarea {
@@ -1333,8 +1337,8 @@
 }
 .success {
   font-size: var(--home-support, 11px);
-  background: #edf8e6;
-  color: #32671e;
+  background: #eaf5ff;
+  color: var(--brand-blue);
   padding: 12px;
   border-radius: 5px;
   margin: 15px 0 0;
@@ -1342,8 +1346,8 @@
 }
 .error {
   font-size: var(--home-support, 11px);
-  background: #fff1f1;
-  color: #a32d2d;
+  background: #f2f6f8;
+  color: #1f2323;
   padding: 12px;
   border-radius: 5px;
   margin: 15px 0 0;
@@ -2231,4 +2235,151 @@
 
 .contactForm .projectTypeLabel {
   margin-bottom: 0;
+}
+
+/* Align the header brand and CTA with the cinematic hero's side margins. */
+.header .headerInner {
+  width: 82%;
+}
+@media (max-width: 1100px) {
+  .header .headerInner {
+    width: 88%;
+  }
+}
+
+/* The cinematic hero provides the charcoal canvas behind the header. */
+.header {
+  position: relative;
+  z-index: 20;
+  background: transparent;
+}
+
+.mobileHeaderCta{display:none}
+@media(max-width:600px){
+  .header .headerInner{gap:12px}
+  .header .brand{font-size:12.5px;gap:7px}
+  .header .headerLogo{width:29px}
+  .header .mobileHeaderCta{display:inline-flex;min-height:40px;padding:10px 12px;font-size:11px;white-space:nowrap;background: var(--brand-blue);flex-shrink:0}
+  .header .mobileHeaderCta:hover{background:var(--brand-blue-hover)}
+  .header .menuButton{position:fixed;top:auto;bottom:calc(16px + env(safe-area-inset-bottom,0px));left:50%;right:auto;transform:translateX(-50%);z-index:22;justify-content:center;min-height:48px;min-width:120px;padding:12px 20px;background:#232727;border:1px solid #ffffff30;border-radius:28px;box-shadow:0 8px 28px #0005}
+  .header .nav{position:fixed;top:auto;bottom:calc(80px + env(safe-area-inset-bottom,0px));left:16px;right:16px;max-height:calc(100dvh - 176px);overflow-y:auto;overscroll-behavior:contain;padding:12px;border:1px solid #ffffff20;border-radius:14px;box-shadow:0 12px 40px #0005}
+  .header .nav .navCta{display:none}
+  .header .nav>a{min-height:48px;display:flex;align-items:center}
+}
+
+.mobileDock{display:contents}
+.dockLink,.dockMenuIcon{display:none}
+@media(max-width:600px){
+  .header .mobileDock{position:fixed;inset:auto 0 0;z-index:22;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));padding:5px 10px calc(5px + env(safe-area-inset-bottom,0px));background:#1f2323f5;backdrop-filter:blur(14px);border-top:1px solid #ffffff17;box-shadow:0 -8px 30px #00000018}
+  .header .dockLink,.header .mobileDock .menuButton{position:relative;inset:auto;transform:none;min-width:0;width:100%;min-height:60px;padding:9px 2px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border:0;border-radius:9px;background:transparent;box-shadow:none;color:#a7b1b4;font-size:10px;font-weight:500;line-height:1.2;text-decoration:none}
+  .dockLink>svg,.header .dockMenuIcon{display:block;width:21px;height:21px}
+  .header .tabletMenuSymbol{display:none}
+  .header .dockLink[aria-current="location"],.header .mobileDock .menuButton[aria-expanded="true"]{color: var(--brand-blue);background:#119fee0c}
+  .header .dockLink[aria-current="location"]::before{content:"";position:absolute;top:0;width:18px;height:2px;border-radius:2px;background: var(--brand-blue)}
+  .header .dockLink:focus-visible,.header .mobileDock .menuButton:focus-visible{outline-offset:-3px}
+  :global(body):has(.mobileDock){padding-bottom:calc(70px + env(safe-area-inset-bottom,0px))}
+}
+@media(max-width:600px){
+  .header .mobileDock .menuButton>span{font-size:10px}
+}
+
+/* Tablets use the desktop navigation row; phones retain the bottom dock. */
+@media(min-width:701px) and (max-width:1100px){
+  .header .headerInner{gap:16px}
+  .header .brand{font-size:13px;gap:8px}
+  .header .headerLogo{width:33px}
+  .header .menuButton{display:none}
+  .header .nav{display:flex;position:static;inset:auto;align-items:center;gap:10px;padding:0;background:transparent;box-shadow:none;border:0;overflow:visible;max-height:none}
+  .header .nav>a{padding:0;font-size:11px;white-space:nowrap}
+  .header .nav .navCta{display:inline-flex;margin:0;padding:10px 12px;min-height:40px;grid-column:auto}
+}
+@media(min-width:701px) and (max-width:1100px){
+  .header .headerInner{width:92%;gap:20px}
+  .header .nav{gap:clamp(14px,1.8vw,20px)}
+  .header .nav .navCta{margin-left:4px}
+}
+
+/* Keep longer text comfortable within the wider large-screen layout. */
+@media(min-width:1600px){
+  .split>div:first-child{max-width:620px}
+  .aboutGrid .bodyCopy{max-width:62ch}
+}
+
+/* Shared hero-derived typography for section introductions and actions. */
+.sectionHead>p,.bodyCopy,.contactGrid>div>p:not(.eyebrow){font-weight:var(--lead-weight);line-height:var(--lead-leading)}
+.contact h2{font-family:var(--font-heading);font-weight:var(--heading-weight);letter-spacing:var(--heading-tracking);line-height:var(--heading-leading)}
+.contact h2>span{font-style:normal}
+.textLink{font-weight:var(--action-weight);letter-spacing:var(--action-tracking)}
+.nav>a{letter-spacing:var(--action-tracking)}
+.nav .navCta,.mobileHeaderCta{font-weight:var(--action-weight);letter-spacing:var(--action-tracking);border-radius:var(--action-radius)}
+.brand{letter-spacing:-.035em}
+.nav>a{color:var(--on-dark-muted)}
+
+/* Tools: quiet activity within the approved grid, without moving its layout. */
+.techGrid > div {
+  position: relative;
+  isolation: isolate;
+  background: #fff;
+  box-shadow: 0 3px 12px #1f232305;
+  transition: transform 280ms ease, box-shadow 280ms ease, border-color 280ms ease;
+}
+.techGrid > div::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  border: 1px solid #119fee65;
+  border-radius: inherit;
+  background: radial-gradient(ellipse at 50% 0%, #119fee12, transparent 80%);
+  opacity: 0;
+  pointer-events: none;
+  animation: techSignal 14s ease-in-out infinite;
+  animation-delay: var(--tech-delay, 0s);
+}
+.techVisual {
+  transition: transform 280ms ease;
+}
+@keyframes techSignal {
+  0%, 17%, 100% { opacity: 0; }
+  5%, 10% { opacity: 1; }
+}
+@media (hover: hover) and (pointer: fine) {
+  .techGrid > div:hover {
+    transform: translateY(-4px);
+    border-color: #119fee80;
+    box-shadow: 0 12px 28px #1f23230b, 0 3px 8px #119fee0a;
+  }
+  .techGrid > div:hover .techVisual { transform: translateY(-1px) scale(1.05); }
+  .techGrid:hover > div::before { animation-play-state: paused; }
+}
+@supports (animation-timeline: view()) {
+  .techGrid {
+    animation: techReveal 1s ease both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 85%;
+  }
+}
+@keyframes techReveal {
+  from { opacity: .25; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.techGrid > div:nth-child(1) { --tech-delay: -14s; }
+.techGrid > div:nth-child(2) { --tech-delay: -13s; }
+.techGrid > div:nth-child(3) { --tech-delay: -12s; }
+.techGrid > div:nth-child(4) { --tech-delay: -11s; }
+.techGrid > div:nth-child(5) { --tech-delay: -10s; }
+.techGrid > div:nth-child(6) { --tech-delay: -9s; }
+.techGrid > div:nth-child(7) { --tech-delay: -8s; }
+.techGrid > div:nth-child(8) { --tech-delay: -7s; }
+.techGrid > div:nth-child(9) { --tech-delay: -6s; }
+.techGrid > div:nth-child(10) { --tech-delay: -5s; }
+.techGrid > div:nth-child(11) { --tech-delay: -4s; }
+.techGrid > div:nth-child(12) { --tech-delay: -3s; }
+.techGrid > div:nth-child(13) { --tech-delay: -2s; }
+.techGrid > div:nth-child(14) { --tech-delay: -1s; }
+@media (prefers-reduced-motion: reduce) {
+  .techGrid { animation: none; opacity: 1; transform: none; }
+  .techGrid > div::before { animation: none; opacity: 0; }
+  .techGrid > div, .techVisual { transition: none; }
+  .techGrid > div:hover, .techGrid > div:hover .techVisual { transform: none; }
 }

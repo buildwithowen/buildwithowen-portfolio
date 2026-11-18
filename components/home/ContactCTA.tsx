@@ -66,7 +66,7 @@ export default function ContactCTA() {
             forward.
           </p>
           <div className={s.contactServices}>
-            {["Websites", "SEO", "Ads", "Automation"].map((t) => (
+            {["Websites", "SEO", "Ads", "CRM", "Automation"].map((t) => (
               <span key={t}>
                 <Icon kind="check" />
                 {t}
@@ -76,7 +76,7 @@ export default function ContactCTA() {
           <div className={s.directContact}>
             <span>PREFER EMAIL?</span>
             <a href="mailto:info@buildwithowen.com">
-              info@buildwithowen.com <Icon />
+              info@buildwithowen.com 
             </a>
           </div>
         </div>
@@ -166,7 +166,7 @@ export default function ContactCTA() {
             {status === "sending"
               ? "Sending…"
               : "Let’s Talk About Your Project"}
-            <Icon />
+            
           </button>
           <p className={s.formNote}>
             Your details are used to respond to your enquiry.

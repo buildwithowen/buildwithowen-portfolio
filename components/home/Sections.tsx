@@ -92,7 +92,7 @@ export function Services() {
             <article key={title} className={s.serviceCard}>
               <div className={s.cardTop}>
                 <span
-                  className={`${s.serviceIcon} ${i % 2 ? s.greenIcon : ""}`}
+                  className={s.serviceIcon}
                 >
                   <Icon kind={icon} />
                 </span>
@@ -102,7 +102,7 @@ export function Services() {
               <p>{text}</p>
               <span className={s.benefit}>
                 {benefit}
-                <Icon />
+                
               </span>
             </article>
           ))}
@@ -183,7 +183,7 @@ export function FullStackAdvantage() {
             ))}
           </ul>
           <a href="#contact" className={s.textLink}>
-            Let’s connect the dots <Icon />
+            Let’s connect the dots 
           </a>
         </div>
       </div>
@@ -250,7 +250,7 @@ export function Process() {
             <li key={title}>
               <span>
                 0{i + 1}
-                <Icon />
+                
               </span>
               <h3>{title}</h3>
               <p>{text}</p>
@@ -347,7 +347,7 @@ export function About() {
             customers.
           </p>
           <a href="#contact" className={s.textLink}>
-            Tell me what you’re building <Icon />
+            Tell me what you’re building 
           </a>
         </div>
       </div>
@@ -393,7 +393,7 @@ export function Footer() {
         </a>
         <p>Thoughtfully designed. Purposefully built.</p>
         <span>© {new Date().getFullYear()} Build With Owen</span>
-        <a href="#">Back to top ↑</a>
+        <a href="#">Back to top</a>
       </div>
     </footer>
   );

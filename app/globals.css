@@ -1,21 +1,36 @@
 :root {
-  --blue: #0089f7;
-  --cyan: #09b4fd;
-  --green: #66c61c;
-  --ink: #252626;
-  --muted: #626c7d;
-  --light: #f6f8fb;
-  --elevated: #eef3f8;
-  --border: #e0e2e5;
-  --navy: #071627;
+  /* Shared brand system, based on the approved cinematic hero. */
+  --brand-blue: #119fee;
+  --brand-blue-hover: #0e91dc;
+  --blue: var(--brand-blue);
+  --cyan: var(--brand-blue);
+  --heading-weight: 600;
+  --heading-tracking: -0.065em;
+  --hero-heading-tracking: -0.075em;
+  --heading-leading: 1.08;
+  --card-heading-tracking: -0.035em;
+  --lead-weight: 500;
+  --lead-leading: 1.75;
+  --eyebrow-weight: 500;
+  --eyebrow-tracking: 2px;
+  --action-weight: 600;
+  --action-tracking: -0.025em;
+  --action-radius: 7px;
+  --on-dark-muted: #bdc5c6;
+  --ink: #1f2323;
+  --muted: #626d73;
+  --light: #f5f7f7;
+  --elevated: #edf1f2;
+  --border: #dde3e4;
+  --navy: #1f2323;
   --dark-surface: #1f2323;
   --dark-surface-deep: #181b1c;
   --dark-surface-deepest: #151718;
   /* Shared reading scale. Narrow screens retain their established responsive sizes. */
-  --home-body: 16px;
+  --home-body: 17px;
   --home-card-copy: 14px;
   --home-support: 14px;
-  --home-copy-leading: 1.65;
+  --home-copy-leading: var(--lead-leading);
   --home-meta: 14px;
   --home-eyebrow: 11px;
   --home-nav: 14px;
@@ -32,10 +47,12 @@ html {
   scroll-padding-top: 88px;
 }
 body {
+  --font-body: var(--font-montserrat), Arial, sans-serif;
+  --font-heading: var(--font-body);
   margin: 0;
   background: #fff;
   color: var(--ink);
-  font-family: var(--font-montserrat), Arial, sans-serif;
+  font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
 }
 a {
@@ -74,7 +91,7 @@ input:focus-visible,
 textarea:focus-visible,
 select:focus-visible,
 summary:focus-visible {
-  outline: 3px solid #0089f7;
+  outline: 3px solid var(--brand-blue);
   outline-offset: 5px;
 }
 h1,
@@ -85,15 +102,18 @@ p {
 }
 h2 {
   font-size: clamp(30px, 3.3vw, 46px);
-  font-weight: 600;
-  letter-spacing: -1.8px;
-  line-height: 1.2;
+  font-family: var(--font-heading);
+  font-weight: var(--heading-weight);
+  letter-spacing: var(--heading-tracking);
+  line-height: var(--heading-leading);
   margin-bottom: 24px;
 }
 h3 {
   font-size: 18px;
-  letter-spacing: -0.5px;
-  line-height: 1.4;
+  font-family: var(--font-heading);
+  font-weight: var(--heading-weight);
+  letter-spacing: var(--card-heading-tracking);
+  line-height: 1.35;
 }
 p {
   line-height: 1.8;
@@ -114,9 +134,9 @@ svg {
 }
 .eyebrow {
   font-size: var(--home-eyebrow, 10px);
-  letter-spacing: 2px;
-  font-weight: 600;
-  color: #0876bd;
+  letter-spacing: var(--eyebrow-tracking);
+  font-weight: var(--eyebrow-weight);
+  color: var(--brand-blue);
   margin-bottom: 18px;
 }
 .blue {
@@ -129,19 +149,20 @@ svg {
   gap: 22px;
   min-height: 50px;
   padding: 14px 23px;
-  background: linear-gradient(110deg, #006ec7, #0077cc);
+  background: var(--brand-blue);
   color: #fff;
   border: 0;
-  border-radius: 7px;
-  font-size: var(--home-action, 12px);
-  font-weight: 600;
+  border-radius: var(--action-radius);
+  font-size: var(--home-action, 14px);
+  font-weight: var(--action-weight);
+  letter-spacing: var(--action-tracking);
   line-height: 1.5;
   transition:
     background 0.2s,
     transform 0.2s;
 }
 .button:hover {
-  background: #0073cf;
+  background: var(--brand-blue-hover);
   transform: translateY(-2px);
 }
 .button svg {
@@ -167,7 +188,7 @@ svg {
     --home-body: clamp(16px, 1.55vw, 17px);
     --home-card-copy: 14px;
     --home-support: 14px;
-    --home-copy-leading: 1.65;
+    --home-copy-leading: var(--lead-leading);
     --home-meta: 14px;
     --home-eyebrow: 11px;
     --home-nav: 14px;
@@ -182,7 +203,7 @@ svg {
 }
 @media (min-width: 1600px) {
   .container {
-    width: min(1360px, calc(100% - 120px));
+    width: min(1600px, max(1360px, 82vw));
   }
 }
 @media (max-width: 900px) {
@@ -204,7 +225,7 @@ svg {
     padding-block: 64px;
   }
   h2 {
-    letter-spacing: -1.2px;
+    letter-spacing: var(--heading-tracking);
   }
   .button {
     min-height: 50px;

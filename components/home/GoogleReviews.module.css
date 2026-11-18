@@ -10,7 +10,8 @@
   margin-top: 20px;
   color: var(--muted);
   font-size: 16px;
-  line-height: 1.65;
+  line-height: var(--lead-leading);
+  font-weight: var(--lead-weight);
 }
 .cardBrand { display: flex; align-items: center; gap: 10px; }
 .cardBrand img, .googleIcon { object-fit: contain; }
@@ -23,7 +24,7 @@
   flex-shrink: 0;
   border-radius: 50%;
   background: #edf5fc;
-  color: #0876bd;
+  color: var(--brand-blue);
   font-size: 14px;
   font-weight: 600;
 }
@@ -99,7 +100,7 @@
   border: 0;
   cursor: pointer;
 }
-.readMore { text-align: left; font-size: 12px; line-height: 17px; font-weight: 600; letter-spacing: 0.6px; color: #0876bd; padding: 6px 0; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.readMore { text-align: left; font-size: 12px; line-height: 17px; font-weight: 600; letter-spacing: 0.6px; color: var(--brand-blue); padding: 6px 0; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
 .playback { display: block; margin-left: auto; padding: 8px 0; }
 .readMore:focus-visible, .playback:focus-visible, .close:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
 .dialog {

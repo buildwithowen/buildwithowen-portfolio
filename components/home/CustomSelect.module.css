@@ -22,10 +22,10 @@
   transition: border-color 0.15s;
 }
 .trigger:hover {
-  border-color: #0089f7;
+  border-color: var(--brand-blue);
 }
 .trigger[aria-invalid="true"] {
-  border-color: #a32d2d;
+  border-color: #1f2323;
 }
 .trigger.placeholder {
   color: #626c7d;
@@ -79,12 +79,12 @@
   background: #eef3f8;
 }
 .selected {
-  color: #0079cc;
+  color: var(--brand-blue);
   font-weight: 500;
 }
 .root .error {
   margin: 8px 0 0;
-  color: #a32d2d;
+  color: #1f2323;
   font-size: 14px;
   line-height: 1.6;
 }
