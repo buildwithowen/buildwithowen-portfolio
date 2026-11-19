@@ -8,6 +8,32 @@ import s from "./home.module.css";
 export default function Header() {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState("Home");
+  const [dockHidden, setDockHidden] = useState(false);
+
+  useEffect(() => {
+    const mobile = window.matchMedia("(max-width: 600px)");
+    let anchor = Math.max(0, window.scrollY);
+    const onScroll = () => {
+      const y = Math.max(0, Math.min(window.scrollY,
+        document.documentElement.scrollHeight - window.innerHeight));
+      if (!mobile.matches || open || y <= 40) {
+        setDockHidden(false);
+        anchor = y;
+        return;
+      }
+      // Ignore small movements so touch momentum does not flicker the dock.
+      if (Math.abs(y - anchor) < 12) return;
+      setDockHidden(y > anchor);
+      anchor = y;
+    };
+    const onResize = () => { anchor = Math.max(0, window.scrollY); setDockHidden(false); };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    mobile.addEventListener("change", onResize);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      mobile.removeEventListener("change", onResize);
+    };
+  }, [open]);
 
   useEffect(() => {
     const targets = [
@@ -53,7 +79,7 @@ export default function Header() {
         >
           Let’s talk
         </a>
-        <nav className={s.mobileDock} aria-label="Mobile quick navigation">
+        <nav className={s.mobileDock} data-scroll-hidden={dockHidden && !open} aria-label="Mobile quick navigation">
           {[
             { name: "Home", href: "#main", path: "m3 10 9-7 9 7M5 9v11h5v-6h4v6h5V9" },
             { name: "Work", href: "#work", path: "M3 7h18v13H3zM8 7V4h8v3M3 12h18M10 12v3h4v-3" },

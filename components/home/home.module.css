@@ -2383,3 +2383,14 @@
   .techGrid > div, .techVisual { transition: none; }
   .techGrid > div:hover, .techGrid > div:hover .techVisual { transform: none; }
 }
+
+/* Reveal mobile navigation on upward scroll, focus, or while its menu is open. */
+@media(max-width:600px){
+  .header .mobileDock{transition:transform 240ms ease;transform:translateY(0)}
+  .header .mobileDock{transition:transform 220ms ease}
+  .header .mobileDock[data-scroll-hidden="true"]{transform:translateY(110%);pointer-events:none}
+  .header .mobileDock:focus-within{transform:translateY(0);pointer-events:auto}
+}
+@media(max-width:600px) and (prefers-reduced-motion:reduce){
+  .header .mobileDock{transition:none}
+}
